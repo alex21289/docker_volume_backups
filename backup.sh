@@ -5,6 +5,8 @@
 CONTAINER_NAME=$1
 VOLUME_NAME=$2
 DESTINATION=$3
+NAME=$4
+
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
 
 usage() {
@@ -30,4 +32,10 @@ then
   usage
 fi
 
-sudo docker run --rm --volumes-from $CONTAINER_NAME -v $DESTINATION:/backup busybox tar cvzf /backup/backup_$DATE.tar.gz $VOLUME_NAME
+if [ -z $NAME ]
+then
+  echo "No Name given, using backup"
+  NAME="backup"
+fi
+
+sudo docker run --rm --volumes-from $CONTAINER_NAME -v $DESTINATION:/backup busybox tar cvzf /backup/${NAME}_${DATE}.tar.gz $VOLUME_NAME
